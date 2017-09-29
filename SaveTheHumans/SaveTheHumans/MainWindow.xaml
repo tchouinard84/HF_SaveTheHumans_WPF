@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SaveTheHumans"
         mc:Ignorable="d"
-        Title="Save The Humans" Height="700" Width="1000">
+        Title="Save The Humans" Height="700" Width="1000" ResizeMode="NoResize">
     <Window.Resources>
         <ControlTemplate x:Key="EnemyTemplate" TargetType="{x:Type ContentControl}">
             <Grid>
@@ -61,7 +61,7 @@
             </Grid>
         </ControlTemplate>
     </Window.Resources>
-    <Grid Background="Black">
+    <Grid x:Name="grid" Background="Black">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="140"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
@@ -76,19 +76,22 @@
             <TextBlock TextWrapping="Wrap" Text="Avoid These" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
             <ContentControl Content="ContentControl" VerticalAlignment="Center" HorizontalAlignment="Center" Template="{DynamicResource EnemyTemplate}"/>
         </StackPanel>
-        <Canvas x:Name="playArea" Grid.ColumnSpan="3">
+        <Canvas x:Name="playArea" Grid.ColumnSpan="3" MouseMove="playArea_MouseMove" MouseLeave="playArea_MouseLeave">
             <Canvas.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFFF74F2" Offset="0"/>
                     <GradientStop Color="#FF3B31FF" Offset="1"/>
                 </LinearGradientBrush>
             </Canvas.Background>
-            <StackPanel x:Name="human" Orientation="Vertical" Margin="400,100,50,50" Height="40" Width="20" MouseDown="human_MouseDown">
-                <Ellipse Fill="White" Height="10" Width="10"/>
-                <Rectangle Fill="White" Height="25" Width="10"/>
+            <StackPanel x:Name="human" Orientation="Vertical" MouseDown="human_MouseDown">
+                <Ellipse Fill="White" Height="10" Width="10" Stroke="Black"/>
+                <Rectangle Fill="White" Height="25" Width="10" Stroke="Black"/>
             </StackPanel>
-            <TextBlock x:Name="gameOverText" Canvas.Left="230" TextWrapping="Wrap" Text="Game Over" Canvas.Top="195" FontSize="100" FontWeight="Bold" FontStyle="Italic" FontFamily="Arial"/>
-            <Rectangle x:Name="target" Height="50" Canvas.Left="670" Canvas.Top="405" Width="50" RenderTransformOrigin="0.5,0.5">
+            <StackPanel x:Name="gameEnd" Canvas.Left="150" Orientation="Vertical" Canvas.Top="160" Visibility="Hidden">
+                <TextBlock x:Name="gameOverText" TextWrapping="Wrap" Text="Game Over" FontSize="100" FontWeight="Bold" FontStyle="Italic" FontFamily="Arial" Margin="90, 0, 88, 0"/>
+                <TextBlock x:Name="gameEndStatusText" TextWrapping="Wrap" Text="You made it to level 9!" FontSize="72" Margin="0,0,-1,0"/>
+            </StackPanel>
+            <Rectangle x:Name="target" Height="50" Canvas.Left="670" Canvas.Top="405" Stroke="Black" Width="50" RenderTransformOrigin="0.5,0.5" MouseEnter="target_MouseEnter">
                 <Rectangle.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -106,5 +109,9 @@
             </Rectangle>
         </Canvas>
         <ProgressBar x:Name="progressBar" Grid.Column="1" Grid.Row="1" Height="20"/>
+        <StackPanel x:Name="humanCountMsg" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Visibility="Hidden">
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Humans Saved: " VerticalAlignment="Bottom" Foreground="White" FontSize="16"/>
+            <TextBlock x:Name="currentLevel" HorizontalAlignment="Left" TextWrapping="Wrap" Text="0" VerticalAlignment="Bottom" Foreground="#FFFDFDFD" FontSize="18" FontWeight="Bold"/>
+        </StackPanel>
     </Grid>
 </Window>
