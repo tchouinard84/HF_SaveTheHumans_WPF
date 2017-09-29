@@ -83,12 +83,12 @@
                     <GradientStop Color="#FF3B31FF" Offset="1"/>
                 </LinearGradientBrush>
             </Canvas.Background>
-            <StackPanel x:Name="human" Orientation="Vertical" Margin="50" Height="40" Width="20">
+            <StackPanel x:Name="human" Orientation="Vertical" Margin="400,100,50,50" Height="40" Width="20" MouseDown="human_MouseDown">
                 <Ellipse Fill="White" Height="10" Width="10"/>
                 <Rectangle Fill="White" Height="25" Width="10"/>
             </StackPanel>
             <TextBlock x:Name="gameOverText" Canvas.Left="230" TextWrapping="Wrap" Text="Game Over" Canvas.Top="195" FontSize="100" FontWeight="Bold" FontStyle="Italic" FontFamily="Arial"/>
-            <Rectangle Height="50" Canvas.Left="670" Canvas.Top="405" Width="50" RenderTransformOrigin="0.5,0.5">
+            <Rectangle x:Name="target" Height="50" Canvas.Left="670" Canvas.Top="405" Width="50" RenderTransformOrigin="0.5,0.5">
                 <Rectangle.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -105,6 +105,6 @@
                 </Rectangle.Fill>
             </Rectangle>
         </Canvas>
-        <ProgressBar Grid.Column="1" Grid.Row="1" Height="20"/>
+        <ProgressBar x:Name="progressBar" Grid.Column="1" Grid.Row="1" Height="20"/>
     </Grid>
 </Window>

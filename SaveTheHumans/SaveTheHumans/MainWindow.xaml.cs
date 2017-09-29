@@ -13,6 +13,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace SaveTheHumans
 {
@@ -22,15 +23,64 @@ namespace SaveTheHumans
     public partial class MainWindow : Window
     {
         private Random random = new Random();
+        private DispatcherTimer enemyTimer = new DispatcherTimer();
+        private DispatcherTimer targetTimer = new DispatcherTimer();
+        private bool humanCaptured = false;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            enemyTimer.Tick += enemyTimer_Tick;
+            enemyTimer.Interval = TimeSpan.FromSeconds(2);
+
+            targetTimer.Tick += targetTimer_Tick;
+            targetTimer.Interval = TimeSpan.FromSeconds(.1);
+        }
+
+        private void targetTimer_Tick(object sender, EventArgs e)
+        {
+            progressBar.Value += 1;
+            MaybeEndTheGame();
+        }
+
+        private void MaybeEndTheGame()
+        {
+            if (progressBar.Value < progressBar.Maximum) { return; }
+            if (playArea.Children.Contains(gameOverText)) { return; }
+            EndTheGame();
+        }
+
+        private void EndTheGame()
+        {
+            enemyTimer.Stop();
+            targetTimer.Stop();
+            humanCaptured = false;
+            startButton.Visibility = Visibility.Visible;
+            playArea.Children.Add(gameOverText);
+        }
+
+        private void enemyTimer_Tick(object sender, EventArgs e)
+        {
+            AddEnemy();
         }
 
         private void startButton_Click(object sender, RoutedEventArgs e)
         {
-            AddEnemy();
+            StartGame();
+        }
+
+        private void StartGame()
+        {
+            human.IsHitTestVisible = true;
+            humanCaptured = false;
+            progressBar.Value = 0;
+            startButton.Visibility = Visibility.Collapsed;
+            playArea.Children.Clear();
+            playArea.Children.Add(target);
+            playArea.Children.Add(human);
+            enemyTimer.Start();
+            targetTimer.Start();
         }
 
         private void AddEnemy()
@@ -56,6 +106,13 @@ namespace SaveTheHumans
             Storyboard.SetTargetProperty(animation, new PropertyPath(propertyToAnimate));
             storyBoard.Children.Add(animation);
             storyBoard.Begin();
+        }
+
+        private void human_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!enemyTimer.IsEnabled) { return; }
+            humanCaptured = true;
+            human.IsHitTestVisible = false;
         }
     }
 }
